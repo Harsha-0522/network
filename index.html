@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Topology Visualization | Login</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;}
+
+body{
+  background: url("bg.jpg") no-repeat center center/cover; /* your image */
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
+}
+
+/* Card UI */
+.card{
+  width:350px;
+  background:rgba(0,0,0,0.60);
+  padding:30px;
+  border-radius:12px;
+  border:1px solid #19d5ff77;
+  box-shadow:0 0 20px #19d5ff55;
+  backdrop-filter:blur(6px);
+}
+
+h2{
+  text-align:center;
+  color:#19d5ff;
+  margin-bottom:15px;
+}
+
+/* input + button UI */
+input,button{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  border-radius:8px;
+  font-size:15px;
+  border:none;
+  outline:none;
+}
+
+input{
+  background:rgba(255,255,255,0.15);
+  color:#e0f7ff;
+  border:1px solid #0e2d4b;
+}
+input:focus{
+  border-color:#19d5ff;
+  box-shadow:0 0 4px #19d5ff;
+}
+
+button{
+  background:#19d5ff;
+  color:#001727;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+}
+button:hover{background:#47eaff;}
+
+/* forgot */
+.forgot{
+  text-align:center;
+  margin-top:10px;
+}
+.forgot a{
+  color:#8bdcff;
+  text-decoration:none;
+  font-size:14px;
+}
+.forgot a:hover{
+  color:#ffffff;
+  text-decoration:underline;
+}
+
+.error{
+  color:#ff6b6b;
+  font-size:14px;
+  margin-top:8px;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Login</h2>
+
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+
+  <div class="forgot">
+    <a href="#">Forgot Password?</a>
+  </div>
+
+  <div id="error" class="error"></div>
+</div>
+
+
+<script>
+// ---- COMMON USER CREDENTIAL ----
+const COMMON_USER = {
+  username: "networkadmin",
+  password: "topology123"
+};
+
+function login(){
+  const username = document.getElementById("username").value.trim();
+  const pass = document.getElementById("password").value.trim();
+  const error = document.getElementById("error");
+
+  if(username === COMMON_USER.username && pass === COMMON_USER.password){
+    sessionStorage.setItem("authUser", username); // session handling
+    window.location.href = "dashboard.html";      // redirect
+  }else{
+    error.textContent = "Invalid username or password!";
+  }
+}
+</script>
+
+</body>
+</html>
