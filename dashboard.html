@@ -19,6 +19,11 @@ nav{
   padding:0 25px;border-bottom:2px solid #19d5ff55;
 }
 nav .brand{color:#19d5ff;font-size:22px;font-weight:600;}
+nav .user{
+  color:#8bdcff;
+  font-size:14px;
+  margin-right:15px;
+}
 nav button{
   background:#19d5ff;color:#001a2a;border:none;padding:9px 16px;
   border-radius:6px;font-weight:600;cursor:pointer;transition:.3s;
@@ -66,19 +71,24 @@ nav button:hover{background:#47eaff;}
 }
 </style>
 </head>
+
 <body>
 
-<!-- SESSION PROTECTION -->
+<!-- ✅ SESSION PROTECTION -->
 <script>
 if(!sessionStorage.getItem("authUser")){
-  window.location.href="login.html";
+  window.location.href = "index.html";
 }
 </script>
 
 <!-- NAVBAR -->
 <nav>
   <span class="brand">Network Topology Visualization System</span>
-  <button onclick="logout()">Logout</button>
+
+  <div>
+    <span class="user" id="userDisplay"></span>
+    <button onclick="logout()">Logout</button>
+  </div>
 </nav>
 
 <!-- DASHBOARD CONTENT -->
@@ -103,12 +113,23 @@ if(!sessionStorage.getItem("authUser")){
   </div>
 </div>
 
+<!-- ✅ LOGOUT + USER DISPLAY -->
 <script>
+document.getElementById("userDisplay").innerText =
+  "Logged in as: " + sessionStorage.getItem("authUser");
+
 function logout(){
-  sessionStorage.removeItem("authUser");
-  window.location.href="login.html";
+  const confirmLogout = confirm("Are you sure you want to logout?");
+  if(confirmLogout){
+    // Clear session
+    sessionStorage.removeItem("authUser");
+
+    // 🔑 IMPORTANT FIX: force fresh login page
+    window.location.replace("index.html");
+  }
 }
 </script>
+
 
 </body>
 </html>
