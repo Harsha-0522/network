@@ -9,7 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;}
 
 body{
-  background: url("bg.jpg") no-repeat center center/cover; /* your image */
+  background:url("bg.jpg") no-repeat center center/cover;
   height:100vh;
   display:flex;
   justify-content:center;
@@ -34,7 +34,6 @@ h2{
   margin-bottom:15px;
 }
 
-/* input + button UI */
 input,button{
   width:100%;
   padding:12px;
@@ -60,22 +59,20 @@ button{
   color:#001727;
   font-weight:600;
   cursor:pointer;
-  transition:.3s;
 }
 button:hover{background:#47eaff;}
 
-/* forgot */
-.forgot{
+.link{
   text-align:center;
   margin-top:10px;
 }
-.forgot a{
+.link a{
   color:#8bdcff;
   text-decoration:none;
   font-size:14px;
 }
-.forgot a:hover{
-  color:#ffffff;
+.link a:hover{
+  color:white;
   text-decoration:underline;
 }
 
@@ -91,40 +88,130 @@ button:hover{background:#47eaff;}
 <body>
 
 <div class="card">
+
+<!-- LOGIN -->
+<div id="loginBox">
   <h2>Login</h2>
 
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
+  <input type="text" id="loginUser" placeholder="Username">
+  <input type="password" id="loginPass" placeholder="Password">
   <button onclick="login()">Login</button>
 
-  <div class="forgot">
-    <a href="#">Forgot Password?</a>
-  </div>
+  <div id="loginError" class="error"></div>
 
-  <div id="error" class="error"></div>
+  <div class="link">
+    <a href="javascript:void(0)" onclick="showForgot()">Forgot Password?</a><br>
+    <a href="javascript:void(0)" onclick="showSignup()">New user? Sign Up</a>
+  </div>
 </div>
 
+<!-- SIGN UP -->
+<div id="signupBox" style="display:none;">
+  <h2>Sign Up</h2>
+
+  <input type="text" id="suUser" placeholder="Username">
+  <input type="password" id="suPass" placeholder="Password">
+  <input type="password" id="suConfirm" placeholder="Confirm Password">
+
+  <button onclick="signup()">Create Account</button>
+
+  <div id="signupError" class="error"></div>
+
+  <div class="link">
+    <a href="javascript:void(0)" onclick="showLogin()">← Back to Login</a>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div id="forgotBox" style="display:none;">
+  <h2>Reset Password</h2>
+
+  <input type="text" id="fpUser" placeholder="Username">
+  <input type="password" id="fpPass" placeholder="New Password">
+  <input type="password" id="fpConfirm" placeholder="Confirm Password">
+
+  <button onclick="resetPassword()">Set Password</button>
+
+  <div id="fpError" class="error"></div>
+
+  <div class="link">
+    <a href="javascript:void(0)" onclick="showLogin()">← Back to Login</a>
+  </div>
+</div>
+
+</div>
 
 <script>
-// ---- COMMON USER CREDENTIAL ----
-const COMMON_USER = {
-  username: "networkadmin",
-  password: "topology123"
+/* COMMON USER (DEFAULT) */
+let COMMON_USER = JSON.parse(localStorage.getItem("user")) || {
+  username:"networkadmin",
+  password:"topology123"
 };
 
-function login(){
-  const username = document.getElementById("username").value.trim();
-  const pass = document.getElementById("password").value.trim();
-  const error = document.getElementById("error");
+/* UI HELPERS */
+function hideAll(){
+  loginBox.style.display="none";
+  signupBox.style.display="none";
+  forgotBox.style.display="none";
+}
+function showLogin(){ hideAll(); loginBox.style.display="block"; }
+function showSignup(){ hideAll(); signupBox.style.display="block"; }
+function showForgot(){ hideAll(); forgotBox.style.display="block"; }
 
-  if(username === COMMON_USER.username && pass === COMMON_USER.password){
-    sessionStorage.setItem("authUser", username); // session handling
-    window.location.href = "dashboard.html";      // redirect
+/* LOGIN */
+function login(){
+  const u = loginUser.value.trim();
+  const p = loginPass.value.trim();
+
+  if(u===COMMON_USER.username && p===COMMON_USER.password){
+    sessionStorage.setItem("authUser",u);
+    window.location.href="dashboard.html";
   }else{
-    error.textContent = "Invalid username or password!";
+    loginError.textContent="Invalid username or password!";
   }
 }
+
+/* SIGN UP */
+function signup(){
+  if(suUser.value===""||suPass.value===""||suConfirm.value===""){
+    signupError.textContent="Fill all fields!";
+    return;
+  }
+  if(suPass.value!==suConfirm.value){
+    signupError.textContent="Passwords do not match!";
+    return;
+  }
+
+  COMMON_USER={
+    username:suUser.value,
+    password:suPass.value
+  };
+  localStorage.setItem("user",JSON.stringify(COMMON_USER));
+  alert("Account created!");
+  showLogin();
+}
+
+/* FORGOT PASSWORD */
+function resetPassword(){
+  if(fpUser.value!==COMMON_USER.username){
+    fpError.textContent="User not found!";
+    return;
+  }
+  if(fpPass.value!==fpConfirm.value){
+    fpError.textContent="Passwords do not match!";
+    return;
+  }
+
+  COMMON_USER.password=fpPass.value;
+  localStorage.setItem("user",JSON.stringify(COMMON_USER));
+  alert("Password reset successful!");
+  showLogin();
+}
+
+/* ALWAYS RESET TO LOGIN ON LOAD */
+window.onload=showLogin;
 </script>
 
 </body>
 </html>
+
